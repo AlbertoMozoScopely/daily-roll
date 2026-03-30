@@ -338,8 +338,8 @@
 <div class="blocked-overlay" id="blockedOverlay">
   <div class="blocked-box">
     <div class="blocked-icon">🎲</div>
-    <h3>Ya jugaste hoy</h3>
-    <p>Vuelve mañana para tu siguiente Daily Roll. Siguiente turno en:</p>
+    <h3>You already played today</h3>
+    <p>Come back tomorrow for your next Daily Roll. Next turn in:</p>
     <div class="countdown-txt" id="countdown">--:--:--</div>
     <button class="ok-btn" onclick="document.getElementById('blockedOverlay').classList.remove('show')">OK</button>
   </div>
@@ -353,8 +353,8 @@
     <div class="cost-pill" id="confirmCost" style="display:none">💎 <span id="confirmCostAmt"></span></div>
     <div class="dice-preview" id="confirmDicePreview" style="display:none"></div>
     <div class="confirm-actions">
-      <button class="btn-cancel" onclick="closeConfirm()">Cancelar</button>
-      <button class="btn-confirm" id="confirmOkBtn">Confirmar</button>
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm" id="confirmOkBtn">Confirm</button>
     </div>
   </div>
 </div>
@@ -363,7 +363,7 @@
 <div class="modal-wrapper">
   <div class="modal-content">
 
-    <div class="close-btn" onclick="showToast('Cerrando...','warn')">
+    <div class="close-btn" onclick="showToast('Closing...','warn')">
       <iconify-icon icon="lucide:x" style="font-size:20px;"></iconify-icon>
     </div>
     <div class="ribbon-container">
@@ -377,7 +377,7 @@
       <div style="display:flex; justify-content:center; margin-bottom:6px;">
         <div class="gem-badge">💎 <span id="gemCount">20</span></div>
       </div>
-      <h2 class="subtitle">¡Lanza los dados para ganar recompensas!</h2>
+      <h2 class="subtitle">Roll the dice to win free rewards!</h2>
       <div class="rewards-grid">
         <div class="reward-cell green locked" id="cat-0" onclick="tryAssign(0)">
           <div class="req-box light">3x</div>
@@ -474,13 +474,13 @@ let sessionDone = false;
 let gems = parseInt(localStorage.getItem(GEM_KEY) || '20');
 
 const categories = [
-  { id:0, name:'Tres iguales',   prize:'2x Stickers', check: threeOfAKind,  claimed:false },
-  { id:1, name:'Cuatro iguales', prize:'2x Dados',     check: fourOfAKind,   claimed:false },
-  { id:2, name:'Full House',     prize:'2x Stickers',  check: fullHouse,     claimed:false },
-  { id:3, name:'Escalera Peq.', prize:'1x Apertura',  check: smallStraight, claimed:false },
-  { id:4, name:'Escalera Gran.', prize:'2x Apertura',  check: largeStraight, claimed:false },
-  { id:5, name:'Oportunidad',    prize:'2x Tickets',   check: ()=>true,      claimed:false },
-  { id:6, name:'YAHTZEE!',       prize:'5x Dados',     check: yahtzee,       claimed:false },
+  { id:0, name:'Three of a Kind', prize:'2x Stickers',  check: threeOfAKind,  claimed:false },
+  { id:1, name:'Four of a Kind',  prize:'2x Dice',      check: fourOfAKind,   claimed:false },
+  { id:2, name:'Full House',      prize:'2x Stickers',  check: fullHouse,     claimed:false },
+  { id:3, name:'Small Straight',  prize:'1x Aperture',  check: smallStraight, claimed:false },
+  { id:4, name:'Large Straight',  prize:'2x Aperture',  check: largeStraight, claimed:false },
+  { id:5, name:'Chance',          prize:'2x Tickets',   check: ()=>true,      claimed:false },
+  { id:6, name:'YAHTZEE!',        prize:'5x Dice',      check: yahtzee,       claimed:false },
 ];
 
 function init() {
@@ -616,22 +616,22 @@ function toggleLock(i) {
   if (!hasRolled) { showToast('Tira primero','warn'); return; }
   lockedDice[i] = !lockedDice[i];
   renderDice();
-  showToast(lockedDice[i] ? `🔒 Dado ${diceValues[i]} bloqueado` : `🔓 Dado desbloqueado`, 'success');
+  showToast(lockedDice[i] ? `🔒 Die ${diceValues[i]} locked` : `🔓 Die unlocked`, 'success');
 }
 
 function askReroll() {
   if (document.getElementById('btnReroll').classList.contains('disabled')) return;
   openConfirm(
     'Bonus Roll',
-    `Tira de nuevo los dados no bloqueados. Te quedan ${rerollsLeft} de ${MAX_REROLLS} bonus rolls.`,
+    `Re-roll all unlocked dice. You have ${rerollsLeft} of ${MAX_REROLLS} bonus rolls left.`,
     REROLL_COST, null,
     () => {
-      if (!spendGems(REROLL_COST)) { showToast('Sin gemas','error'); return; }
+      if (!spendGems(REROLL_COST)) { showToast('Not enough gems','error'); return; }
       rerollsLeft--;
       rollsLeft = 1; // give 1 extra roll
       closeConfirm();
       setTimeout(() => { rollDice(); }, 100);
-      showToast(`💎 Bonus Roll usado — ${rerollsLeft} restantes`, 'gem');
+      showToast(`💎 Bonus Roll used — ${rerollsLeft} remaining`, 'gem');
     }
   );
 }
@@ -640,10 +640,10 @@ function askRestart() {
   if (document.getElementById('btnRestart').classList.contains('disabled')) return;
   openConfirm(
     'Restart Turn',
-    'Reinicia el turno: 3 tiradas nuevas, dados desbloqueados. Las recompensas ya reclamadas se mantienen.',
+    'Restart the turn: 3 new rolls, all dice unlocked. Already claimed rewards are kept.',
     RESTART_COST, null,
     () => {
-      if (!spendGems(RESTART_COST)) { showToast('Sin gemas','error'); return; }
+      if (!spendGems(RESTART_COST)) { showToast('Not enough gems','error'); return; }
       diceValues  = [1,1,1,1,1];
       lockedDice  = [false,false,false,false,false];
       rollsLeft   = TOTAL_ROLLS;
@@ -651,7 +651,7 @@ function askRestart() {
       hasRolled   = false;
       closeConfirm();
       renderDice(); renderPips(); renderRerollPips(); renderCategories(); updateButtonArea();
-      showToast(`💎 Turno reiniciado`, 'gem');
+      showToast(`💎 Turn restarted`, 'gem');
     }
   );
 }
@@ -659,16 +659,16 @@ function askRestart() {
 function tryAssign(catId) {
   if (sessionDone) return;
   const cat = categories[catId];
-  if (cat.claimed) { showToast('Ya reclamado','warn'); return; }
-  if (!hasRolled)  { showToast('Tira los dados primero','warn'); return; }
-  if (!cat.check()) { showToast('Combinación no válida','error'); return; }
+  if (cat.claimed) { showToast('Already claimed','warn'); return; }
+  if (!hasRolled)  { showToast('Roll the dice first','warn'); return; }
+  if (!cat.check()) { showToast('Combination does not qualify','error'); return; }
   openConfirm(
-    cat.name, `Premio: ${cat.prize}`, null,
+    cat.name, `Prize: ${cat.prize}`, null,
     diceValues.map((v,i) => ({ v, locked: lockedDice[i] })),
     () => {
       cat.claimed = true; closeConfirm();
       renderCategories(); saveToday();
-      showToast(`🎉 ¡${cat.prize} reclamado!`, 'success');
+      showToast(`🎉 ${cat.prize} claimed!`, 'success');
     }
   );
 }
