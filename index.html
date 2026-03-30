@@ -217,6 +217,19 @@
   }
 
   /* Out-of-rolls state: two gem buttons replace ROLL */
+  /* ===== NEXT DAY BUTTON ===== */
+  .next-day-btn {
+    width: 100%; padding: 13px;
+    background: linear-gradient(180deg, #334155, #1e293b);
+    border: 2px solid #475569; border-radius: 14px;
+    box-shadow: 0 4px 0 #0f172a;
+    color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.5px;
+    transition: filter 0.2s, transform 0.1s;
+  }
+  .next-day-btn:hover { filter: brightness(1.2); color: rgba(255,255,255,0.8); }
+  .next-day-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #0f172a; }
+
   .gem-actions {
     display: none; flex-direction: column; gap: 8px;
   }
@@ -459,13 +472,21 @@
   </div>
 </div>
 
+<!-- Next Day button -->
+<div style="width:100%; max-width:343px; margin-top:12px;">
+  <button class="next-day-btn" id="nextDayBtn" onclick="nextDay()">
+    ☀️ Next Day
+  </button>
+</div>
+
 <script>
 const TOTAL_ROLLS  = 3;
 const MAX_REROLLS  = 2;
 const REROLL_COST  = 1;
 const RESTART_COST = 5;
-const STORAGE_KEY  = 'dailyRoll_v3';
-const GEM_KEY      = 'dailyRoll_gems';
+const STORAGE_KEY       = 'dailyRoll_v3';
+const PERMANENT_KEY     = 'dailyRoll_permanent'; // categories locked forever
+const GEM_KEY           = 'dailyRoll_gems';
 
 let diceValues  = [1,1,1,1,1];
 let lockedDice  = [false,false,false,false,false];
@@ -487,6 +508,10 @@ const categories = [
 
 function init() {
   renderGems();
+  // Load permanently locked categories from previous days
+  const permanent = getPermanent();
+  permanent.forEach((c,i) => { if(c) categories[i].claimed = true; });
+
   const saved = getSaved();
   if (saved && saved.date === todayStr()) {
     saved.claimed.forEach((c,i) => { if(c) categories[i].claimed = true; });
@@ -497,13 +522,41 @@ function init() {
   renderDice();
   renderPips();
   renderRerollPips();
+  renderCategories();
   updateButtonArea();
+}
+
+function nextDay() {
+  // Save currently claimed as permanently locked
+  savePermanent();
+  // Clear today's session
+  localStorage.removeItem(STORAGE_KEY);
+
+  // Reset turn state
+  diceValues  = [1,1,1,1,1];
+  lockedDice  = [false,false,false,false,false];
+  rollsLeft   = TOTAL_ROLLS;
+  rerollsLeft = MAX_REROLLS;
+  hasRolled   = false;
+  sessionDone = false;
+
+  // Hide blocked overlay if open
+  document.getElementById('blockedOverlay').classList.remove('show');
+
+  renderDice();
+  renderPips();
+  renderRerollPips();
+  renderCategories();
+  updateButtonArea();
+  showToast('☀️ New day! Claimed rewards are locked forever.', 'warn');
 }
 
 function todayStr() { return new Date().toISOString().slice(0,10); }
 function getSaved()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; } }
+function getPermanent() { try { return JSON.parse(localStorage.getItem(PERMANENT_KEY)) || []; } catch { return []; } }
 function saveGems()  { localStorage.setItem(GEM_KEY, String(gems)); }
 function saveToday() { localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayStr(), claimed: categories.map(c=>c.claimed) })); }
+function savePermanent() { localStorage.setItem(PERMANENT_KEY, JSON.stringify(categories.map(c=>c.claimed))); }
 
 function renderGems() { document.getElementById('gemCount').textContent = gems; }
 function spendGems(n) {
@@ -669,7 +722,7 @@ function tryAssign(catId) {
     diceValues.map((v,i) => ({ v, locked: lockedDice[i] })),
     () => {
       cat.claimed = true; closeConfirm();
-      renderCategories(); saveToday();
+      renderCategories(); saveToday(); savePermanent();
       showToast(`🎉 ${cat.prize} claimed!`, 'success');
     }
   );
