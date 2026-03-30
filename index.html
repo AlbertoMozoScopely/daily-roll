@@ -100,12 +100,14 @@
   .reward-cell.locked  { filter: grayscale(0.6) brightness(0.8); cursor: not-allowed; }
   .reward-cell.claimed { filter: brightness(0.75); cursor: default; }
   .reward-cell.available {
-    animation: availablePulse 1.2s ease-in-out infinite;
-    box-shadow: 0 0 0 3px rgba(34,197,94,0.7), inset 0 -3px 0 rgba(0,0,0,0.06);
+    animation: availablePulse 1s ease-in-out infinite;
+    outline: 3px solid #22c55e;
+    outline-offset: 2px;
+    cursor: pointer;
   }
   @keyframes availablePulse {
-    0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.5), inset 0 -3px 0 rgba(0,0,0,0.06); }
-    50%      { box-shadow: 0 0 0 6px rgba(34,197,94,0.3), inset 0 -3px 0 rgba(0,0,0,0.06); }
+    0%,100% { outline-color: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.5), inset 0 -3px 0 rgba(0,0,0,0.06); }
+    50%      { outline-color: #86efac; box-shadow: 0 0 18px rgba(34,197,94,0.9), inset 0 -3px 0 rgba(0,0,0,0.06); }
   }
   .claimed-check {
     position: absolute; top: 4px; right: 4px;
@@ -587,7 +589,8 @@ function renderPips() {
 }
 function renderRerollPips() {
   for (let i=0; i<MAX_REROLLS; i++) {
-    document.getElementById(`rpip-${i}`).className = 'reroll-pip ' + (i < rerollsLeft ? 'avail' : 'used');
+    const el = document.getElementById(`rpip-${i}`);
+    if (el) el.className = 'reroll-pip ' + (i < rerollsLeft ? 'avail' : 'used');
   }
 }
 
