@@ -31,9 +31,9 @@
 
   /* ===== GEM BAR ===== */
   .gem-bar {
-    display: flex; justify-content: flex-end;
+    display: flex; justify-content: space-between; align-items: center;
     width: 100%; max-width: 343px;
-    margin-bottom: 8px; padding-right: 4px;
+    margin-bottom: 8px; padding: 0 4px;
   }
   .gem-badge {
     background: linear-gradient(135deg, #8e44ad, #6c3483);
@@ -359,8 +359,25 @@
   </div>
 </div>
 
-<!-- Gem bar -->
+<!-- Top bar: rolls counter + gems -->
 <div class="gem-bar">
+  <div class="rolls-row">
+    <div class="rolls-left-info">
+      <span class="rolls-label">Tiradas:</span>
+      <div class="roll-pips">
+        <div class="roll-pip active" id="pip-0"></div>
+        <div class="roll-pip active" id="pip-1"></div>
+        <div class="roll-pip active" id="pip-2"></div>
+      </div>
+    </div>
+    <div class="rolls-left-info" style="margin-left:10px;">
+      <span class="rolls-label" style="font-size:11px;">Bonus:</span>
+      <div class="reroll-pips">
+        <div class="reroll-pip avail" id="rpip-0"></div>
+        <div class="reroll-pip avail" id="rpip-1"></div>
+      </div>
+    </div>
+  </div>
   <div class="gem-badge">💎 <span id="gemCount">20</span></div>
 </div>
 
@@ -420,25 +437,6 @@
 
     <!-- Dice Section -->
     <div class="dice-section">
-
-      <!-- Rolls + reroll pips row -->
-      <div class="rolls-row">
-        <div class="rolls-left-info">
-          <span class="rolls-label">Tiradas:</span>
-          <div class="roll-pips">
-            <div class="roll-pip active" id="pip-0"></div>
-            <div class="roll-pip active" id="pip-1"></div>
-            <div class="roll-pip active" id="pip-2"></div>
-          </div>
-        </div>
-        <div class="rolls-left-info">
-          <span class="rolls-label" style="font-size:11px;">Bonus:</span>
-          <div class="reroll-pips">
-            <div class="reroll-pip avail" id="rpip-0"></div>
-            <div class="reroll-pip avail" id="rpip-1"></div>
-          </div>
-        </div>
-      </div>
 
       <!-- Dice tray -->
       <div class="dice-tray">
