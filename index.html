@@ -97,12 +97,13 @@
   .reward-cell.green  { background: var(--card-green); }
   .reward-cell.yellow { background: var(--card-yellow); }
   .reward-cell.full-width { grid-column: 1 / -1; max-width: 180px; margin: 4px auto 0; }
-  .reward-cell.locked  { filter: grayscale(0.6) brightness(0.8); cursor: not-allowed; }
-  .reward-cell.claimed { filter: brightness(0.75); cursor: default; }
+  .reward-cell.locked  { filter: brightness(1.15) saturate(1.1); cursor: not-allowed; }
+  .reward-cell.claimed { filter: grayscale(0.7) brightness(0.55); cursor: default; }
   .reward-cell.available {
     animation: availablePulse 1s ease-in-out infinite;
     outline: 3px solid #22c55e;
     outline-offset: 2px;
+    filter: brightness(1.25) saturate(1.2);
     cursor: pointer;
   }
   @keyframes availablePulse {
