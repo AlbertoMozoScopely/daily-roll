@@ -99,6 +99,7 @@
   .reward-cell.full-width { grid-column: 1 / -1; max-width: 180px; margin: 4px auto 0; }
   .reward-cell.locked  { filter: brightness(1.15) saturate(1.1); cursor: not-allowed; }
   .reward-cell.claimed { filter: grayscale(0.7) brightness(0.55); cursor: default; }
+  .reward-cell.failed  { filter: grayscale(0.5) brightness(0.6); cursor: default; }
   .reward-cell.available {
     animation: availablePulse 1s ease-in-out infinite;
     outline: 3px solid #22c55e;
@@ -112,11 +113,12 @@
   }
   .claimed-check {
     position: absolute; top: 4px; right: 4px;
-    background: #22c55e; color: white; border-radius: 50%;
+    color: white; border-radius: 50%;
     width: 16px; height: 16px; font-size: 10px; font-weight: 900;
     display: none; align-items: center; justify-content: center;
   }
-  .reward-cell.claimed .claimed-check { display: flex; }
+  .reward-cell.claimed .claimed-check { display: flex; background: #22c55e; }
+  .reward-cell.failed  .claimed-check { display: flex; background: #ef4444; }
   .req-box {
     display: flex; align-items: center; justify-content: center;
     border-radius: 8px; color: white; font-weight: 800; font-size: 14px;
@@ -182,10 +184,7 @@
     background: #FFF9C4; box-shadow: 0 4px 0 #D4A800, 0 0 0 3px #F8D144;
     transform: translateY(-4px);
   }
-  .dice.locked::after {
-    content: '🔒'; position: absolute; bottom: -8px; right: -6px;
-    font-size: 12px; pointer-events: none;
-  }
+  .dice.locked::after { content: none; }
   .dice.rolling { animation: diceRoll 0.4s ease; }
   @keyframes diceRoll {
     0%   { transform: rotate(0deg)   scale(1); }
@@ -530,7 +529,8 @@ function init() {
   const saved = getSaved();
   if (saved && saved.date === todayStr()) {
     saved.claimed.forEach((c,i) => { if(c) categories[i].claimed = true; });
-    if (categories.some(c => c.claimed)) document.getElementById('nextDayBtn').disabled = false;
+    if (saved.failed) saved.failed.forEach((f,i) => { if(f) categories[i].failed = true; });
+    if (categories.some(c => c.claimed || c.failed)) document.getElementById('nextDayBtn').disabled = false;
     showBlocked();
     renderCategories();
     return;
@@ -555,6 +555,7 @@ function nextDay() {
   rerollsLeft = MAX_REROLLS;
   hasRolled   = false;
   sessionDone = false;
+  categories.forEach(c => { c.failed = false; });
 
   // Hide blocked overlay if open
   document.getElementById('blockedOverlay').classList.remove('show');
@@ -578,7 +579,7 @@ function todayStr() { return new Date().toISOString().slice(0,10); }
 function getSaved()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; } }
 function getPermanent() { try { return JSON.parse(localStorage.getItem(PERMANENT_KEY)) || []; } catch { return []; } }
 function saveGems()  { localStorage.setItem(GEM_KEY, String(gems)); }
-function saveToday() { localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayStr(), claimed: categories.map(c=>c.claimed) })); }
+function saveToday() { localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayStr(), claimed: categories.map(c=>c.claimed), failed: categories.map(c=>c.failed||false) })); }
 function savePermanent() { localStorage.setItem(PERMANENT_KEY, JSON.stringify(categories.map(c=>c.claimed))); }
 
 function renderGems() { document.getElementById('gemCount').textContent = gems; }
@@ -740,19 +741,25 @@ function askRestart() {
 function tryAssign(catId) {
   if (sessionDone) return;
   const cat = categories[catId];
-  if (cat.claimed) { showToast('Already claimed','warn'); return; }
-  if (!hasRolled)  { showToast('Roll the dice first','warn'); return; }
-  if (!cat.check()) { showToast('Combination does not qualify','error'); return; }
+  if (cat.claimed || cat.failed) { showToast('Already submitted','warn'); return; }
+  if (!hasRolled) { showToast('Roll the dice first','warn'); return; }
+  const success = cat.check();
   openConfirm(
-    cat.name, `Prize: ${cat.prize}`, null,
+    cat.name, success ? `Prize: ${cat.prize}` : 'Combination does not qualify — submit anyway?', null,
     diceValues.map((v,i) => ({ v, locked: lockedDice[i] })),
     () => {
-      cat.claimed = true; closeConfirm();
+      if (success) {
+        cat.claimed = true;
+        showToast(`🎉 ${cat.prize} claimed!`, 'success');
+      } else {
+        cat.failed = true;
+        showToast(`✗ Submitted — no prize this time`, 'warn');
+      }
+      closeConfirm();
       sessionDone = true;
       renderCategories(); saveToday(); savePermanent();
       updateButtonArea();
       document.getElementById('nextDayBtn').disabled = false;
-      showToast(`🎉 ${cat.prize} claimed!`, 'success');
     }
   );
 }
@@ -777,10 +784,19 @@ function counts() {
 function renderCategories() {
   categories.forEach(cat => {
     const el = document.getElementById(`cat-${cat.id}`);
-    el.className = el.className.replace(/ (locked|available|claimed)/g,'');
-    if (cat.claimed)             el.classList.add('claimed');
-    else if (hasRolled && cat.check()) el.classList.add('available');
-    else                         el.classList.add('locked');
+    el.className = el.className.replace(/ (locked|available|claimed|failed)/g,'');
+    const badge = el.querySelector('.claimed-check');
+    if (cat.claimed) {
+      el.classList.add('claimed');
+      if (badge) badge.textContent = '✓';
+    } else if (cat.failed) {
+      el.classList.add('failed');
+      if (badge) badge.textContent = '✗';
+    } else if (hasRolled && cat.check()) {
+      el.classList.add('available');
+    } else {
+      el.classList.add('locked');
+    }
   });
 }
 
