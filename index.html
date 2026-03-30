@@ -594,10 +594,12 @@ function updateButtonArea() {
   const gemActions = document.getElementById('gemActions');
 
   if (sessionDone) {
-    rollBtn.style.display = 'none';
+    rollBtn.style.display = 'flex';
+    rollBtn.classList.add('disabled');
     gemActions.classList.remove('show');
     return;
   }
+  rollBtn.classList.remove('disabled');
 
   if (outOfRolls) {
     rollBtn.style.display = 'none';
@@ -691,6 +693,7 @@ function animateAndRoll() {
 }
 
 function toggleLock(i) {
+  if (sessionDone) return;
   if (!hasRolled) { showToast('Tira primero','warn'); return; }
   lockedDice[i] = !lockedDice[i];
   renderDice();
