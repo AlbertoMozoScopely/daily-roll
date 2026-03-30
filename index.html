@@ -231,6 +231,14 @@
   .next-day-btn:hover:not(:disabled) { filter: brightness(1.2); color: rgba(255,255,255,0.8); }
   .next-day-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #0f172a; }
   .next-day-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .restart-btn {
+    width: 100%; padding: 9px;
+    background: transparent; border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px; color: rgba(255,255,255,0.25);
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    letter-spacing: 0.5px; transition: color 0.2s, border-color 0.2s;
+  }
+  .restart-btn:hover { color: rgba(255,100,100,0.7); border-color: rgba(255,100,100,0.3); }
 
   .gem-actions {
     display: none; flex-direction: column; gap: 8px;
@@ -481,6 +489,9 @@
     ☀️ Next Day
   </button>
 </div>
+<div style="width:100%; margin-top:6px;">
+  <button class="restart-btn" onclick="restartPrototype()">↺ Restart Prototype</button>
+</div>
 </div><!-- end column wrapper -->
 
 <script>
@@ -554,6 +565,13 @@ function nextDay() {
   renderCategories();
   updateButtonArea();
   showToast('☀️ New day! Claimed rewards are locked forever.', 'warn');
+}
+
+function restartPrototype() {
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(PERMANENT_KEY);
+  localStorage.removeItem(GEM_KEY);
+  location.reload();
 }
 
 function todayStr() { return new Date().toISOString().slice(0,10); }
