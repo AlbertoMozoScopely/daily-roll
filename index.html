@@ -227,8 +227,9 @@
     cursor: pointer; letter-spacing: 0.5px;
     transition: filter 0.2s, transform 0.1s;
   }
-  .next-day-btn:hover { filter: brightness(1.2); color: rgba(255,255,255,0.8); }
-  .next-day-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #0f172a; }
+  .next-day-btn:hover:not(:disabled) { filter: brightness(1.2); color: rgba(255,255,255,0.8); }
+  .next-day-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #0f172a; }
+  .next-day-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
   .gem-actions {
     display: none; flex-direction: column; gap: 8px;
@@ -375,6 +376,7 @@
 </div>
 
 
+<div style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:343px;">
 <div class="modal-wrapper">
   <div class="modal-content">
 
@@ -473,11 +475,12 @@
 </div>
 
 <!-- Next Day button -->
-<div style="width:100%; max-width:343px; margin-top:12px;">
-  <button class="next-day-btn" id="nextDayBtn" onclick="nextDay()">
+<div style="width:100%; margin-top:12px;">
+  <button class="next-day-btn" id="nextDayBtn" onclick="nextDay()" disabled>
     ☀️ Next Day
   </button>
 </div>
+</div><!-- end column wrapper -->
 
 <script>
 const TOTAL_ROLLS  = 3;
@@ -515,6 +518,7 @@ function init() {
   const saved = getSaved();
   if (saved && saved.date === todayStr()) {
     saved.claimed.forEach((c,i) => { if(c) categories[i].claimed = true; });
+    if (categories.some(c => c.claimed)) document.getElementById('nextDayBtn').disabled = false;
     showBlocked();
     renderCategories();
     return;
@@ -723,6 +727,7 @@ function tryAssign(catId) {
     () => {
       cat.claimed = true; closeConfirm();
       renderCategories(); saveToday(); savePermanent();
+      document.getElementById('nextDayBtn').disabled = false;
       showToast(`🎉 ${cat.prize} claimed!`, 'success');
     }
   );
