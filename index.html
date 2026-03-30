@@ -461,12 +461,12 @@
 
       <!-- Gem actions (replace ROLL when out of rolls) -->
       <div class="gem-actions" id="gemActions">
-        <div class="gem-btn btn-reroll" id="btnReroll" onclick="askReroll()">
+        <div class="gem-btn btn-reroll" id="btnReroll" onclick="askReroll()" style="display:none;">
           <iconify-icon icon="lucide:dices" style="font-size:20px;"></iconify-icon>
           Bonus Roll
           <div class="gem-cost-tag">💎 1</div>
         </div>
-        <div class="gem-btn btn-restart" id="btnRestart" onclick="askRestart()">
+        <div class="gem-btn btn-restart" id="btnRestart" onclick="askRestart()" style="display:none;">
           <iconify-icon icon="lucide:refresh-cw" style="font-size:20px;"></iconify-icon>
           Restart Turn
           <div class="gem-cost-tag">💎 5</div>
@@ -544,11 +544,21 @@ function updateButtonArea() {
   if (outOfRolls) {
     rollBtn.style.display = 'none';
     gemActions.classList.add('show');
-    // Enable/disable individual gem buttons
-    document.getElementById('btnReroll').classList.toggle('disabled',
-      rerollsLeft === 0 || !hasRolled || gems < REROLL_COST
-    );
-    document.getElementById('btnRestart').classList.toggle('disabled', gems < RESTART_COST);
+
+    const rerollBtn  = document.getElementById('btnReroll');
+    const restartBtn = document.getElementById('btnRestart');
+
+    if (rerollsLeft > 0) {
+      // Still have bonus rolls — show only Bonus Roll
+      rerollBtn.style.display  = 'flex';
+      restartBtn.style.display = 'none';
+      rerollBtn.classList.toggle('disabled', gems < REROLL_COST);
+    } else {
+      // Bonus rolls exhausted — show only Restart Turn
+      rerollBtn.style.display  = 'none';
+      restartBtn.style.display = 'flex';
+      restartBtn.classList.toggle('disabled', gems < RESTART_COST);
+    }
   } else {
     rollBtn.style.display = 'flex';
     gemActions.classList.remove('show');
