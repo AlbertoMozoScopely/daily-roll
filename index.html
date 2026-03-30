@@ -582,7 +582,6 @@ function diceFaceHTML(v) {
 function renderPips() {
   for (let i=0; i<TOTAL_ROLLS; i++) {
     const a = i < rollsLeft;
-    document.getElementById(`pip-${i}`).className  = 'roll-pip ' + (a?'active':'inactive');
     document.getElementById(`bpip-${i}`).className = 'roll-pip ' + (a?'active':'inactive');
   }
 }
