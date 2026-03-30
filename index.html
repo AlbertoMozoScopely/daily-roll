@@ -359,27 +359,6 @@
   </div>
 </div>
 
-<!-- Top bar: rolls counter + gems -->
-<div class="gem-bar">
-  <div class="rolls-row">
-    <div class="rolls-left-info">
-      <span class="rolls-label">Tiradas:</span>
-      <div class="roll-pips">
-        <div class="roll-pip active" id="pip-0"></div>
-        <div class="roll-pip active" id="pip-1"></div>
-        <div class="roll-pip active" id="pip-2"></div>
-      </div>
-    </div>
-    <div class="rolls-left-info" style="margin-left:10px;">
-      <span class="rolls-label" style="font-size:11px;">Bonus:</span>
-      <div class="reroll-pips">
-        <div class="reroll-pip avail" id="rpip-0"></div>
-        <div class="reroll-pip avail" id="rpip-1"></div>
-      </div>
-    </div>
-  </div>
-  <div class="gem-badge">💎 <span id="gemCount">20</span></div>
-</div>
 
 <div class="modal-wrapper">
   <div class="modal-content">
@@ -395,6 +374,9 @@
 
     <!-- Rewards -->
     <div class="rewards-section">
+      <div style="display:flex; justify-content:center; margin-bottom:6px;">
+        <div class="gem-badge">💎 <span id="gemCount">20</span></div>
+      </div>
       <h2 class="subtitle">¡Lanza los dados para ganar recompensas!</h2>
       <div class="rewards-grid">
         <div class="reward-cell green locked" id="cat-0" onclick="tryAssign(0)">
