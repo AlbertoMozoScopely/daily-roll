@@ -7,7 +7,6 @@
 <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 <style>
   :root {
-    --bg: #0A1626;
     --modal-top: #7EE3FC;
     --modal-bottom: #3AA4F8;
     --card-green: #C6EDB2;
@@ -19,8 +18,6 @@
     --btn-shadow: #D68F00;
     --red: #E83D3D;
     --red-shadow: #A11E1E;
-    --gem: #9B59B6;
-    --gem-shadow: #6C3483;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -32,7 +29,7 @@
     color: white; padding: 16px;
   }
 
-  /* ===== GEM COUNTER (top) ===== */
+  /* ===== GEM BAR ===== */
   .gem-bar {
     display: flex; justify-content: flex-end;
     width: 100%; max-width: 343px;
@@ -40,14 +37,11 @@
   }
   .gem-badge {
     background: linear-gradient(135deg, #8e44ad, #6c3483);
-    border: 2px solid #d7bde2;
-    border-radius: 20px;
-    padding: 5px 12px;
-    display: flex; align-items: center; gap: 6px;
+    border: 2px solid #d7bde2; border-radius: 20px;
+    padding: 5px 12px; display: flex; align-items: center; gap: 6px;
     font-weight: 800; font-size: 15px;
     box-shadow: 0 3px 0 #4a235a, 0 4px 10px rgba(0,0,0,0.3);
   }
-  .gem-icon { font-size: 18px; }
 
   /* ===== WRAPPER ===== */
   .modal-wrapper {
@@ -143,7 +137,7 @@
     display: flex; flex-direction: column; gap: 12px;
   }
 
-  /* rolls counter */
+  /* Rolls counter row */
   .rolls-row {
     display: flex; align-items: center; justify-content: space-between;
   }
@@ -157,45 +151,14 @@
   .roll-pip.active   { background: #4ADE80; }
   .roll-pip.inactive { background: #ccc; opacity: 0.4; }
 
-  /* ===== BONUS ACTIONS ROW ===== */
-  .bonus-row {
-    display: flex; gap: 8px;
-  }
-  .bonus-btn {
-    flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
-    padding: 8px 6px; border-radius: 12px; border: 2px solid;
-    font-weight: 800; font-size: 12px; cursor: pointer;
-    transition: transform 0.15s, filter 0.15s, opacity 0.3s;
-    user-select: none;
-  }
-  .bonus-btn:active:not(.disabled) { transform: translateY(2px); }
-  .bonus-btn:hover:not(.disabled)  { filter: brightness(1.1); }
-  .bonus-btn.disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.5); }
-
-  /* Reroll btn — purple */
-  .btn-reroll {
-    background: linear-gradient(180deg, #a855f7, #7e22ce);
-    border-color: #4a0a8a;
-    box-shadow: 0 4px 0 #4a0a8a;
-    color: white;
-  }
-  /* Restart btn — orange/red */
-  .btn-restart {
-    background: linear-gradient(180deg, #f97316, #c2410c);
-    border-color: #7c2d12;
-    box-shadow: 0 4px 0 #7c2d12;
-    color: white;
-  }
-  .gem-cost {
-    background: rgba(255,255,255,0.2); border-radius: 8px;
-    padding: 2px 5px; font-size: 11px; display: flex; align-items: center; gap: 2px;
-  }
+  /* Reroll pips */
   .reroll-pips { display: flex; gap: 3px; align-items: center; }
   .reroll-pip {
-    width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4);
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.4); transition: background 0.3s;
   }
-  .reroll-pip.used   { background: rgba(255,255,255,0.2); }
-  .reroll-pip.avail  { background: #e9d5ff; }
+  .reroll-pip.avail { background: #e9d5ff; }
+  .reroll-pip.used  { background: rgba(255,255,255,0.15); }
 
   /* ===== DICE TRAY ===== */
   .dice-tray {
@@ -231,21 +194,61 @@
   .dot { width: 8px; height: 8px; background: #2B333E; border-radius: 50%; justify-self: center; align-self: center; }
   .dot.hidden { visibility: hidden; }
 
-  /* ===== ROLL BUTTON ===== */
+  /* ===== ROLL BUTTON AREA ===== */
+
+  /* Normal ROLL button */
   .roll-btn {
     background: linear-gradient(180deg, var(--btn-yellow) 0%, #F59F00 100%);
     border: 3px solid #734300; border-radius: 16px;
     box-shadow: 0 6px 0 var(--btn-shadow), 0 10px 16px rgba(0,0,0,0.2);
     width: 100%; height: 60px;
     display: flex; align-items: center; justify-content: center; gap: 12px;
-    cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; user-select: none;
+    cursor: pointer; transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
+    user-select: none;
   }
   .roll-btn:hover:not(.disabled) { filter: brightness(1.05); transform: translateY(-2px); }
   .roll-btn:active:not(.disabled) { box-shadow: 0 2px 0 var(--btn-shadow); transform: translateY(4px); }
-  .roll-btn.disabled { filter: grayscale(0.7) brightness(0.7); cursor: not-allowed; }
+  .roll-btn.disabled { opacity: 0.45; cursor: not-allowed; filter: grayscale(0.5); }
   .roll-btn-text {
     font-size: 28px; font-weight: 900; color: white;
     -webkit-text-stroke: 1.5px #734300; text-shadow: 0 3px 0 #734300; letter-spacing: 1.5px;
+  }
+
+  /* Out-of-rolls state: two gem buttons replace ROLL */
+  .gem-actions {
+    display: none; flex-direction: column; gap: 8px;
+  }
+  .gem-actions.show { display: flex; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .gem-btn {
+    width: 100%; height: 56px; border-radius: 16px; border: 3px solid;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    font-size: 17px; font-weight: 900; color: white; cursor: pointer;
+    transition: transform 0.1s, filter 0.15s;
+    user-select: none; position: relative;
+  }
+  .gem-btn:hover:not(.disabled) { filter: brightness(1.1); transform: translateY(-2px); }
+  .gem-btn:active:not(.disabled) { transform: translateY(3px); }
+  .gem-btn.disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.6); }
+
+  /* Bonus Roll — purple */
+  .btn-reroll {
+    background: linear-gradient(180deg, #a855f7, #7e22ce);
+    border-color: #4a0a8a; box-shadow: 0 5px 0 #4a0a8a;
+  }
+  /* Restart — orange */
+  .btn-restart {
+    background: linear-gradient(180deg, #f97316, #c2410c);
+    border-color: #7c2d12; box-shadow: 0 5px 0 #7c2d12;
+  }
+
+  .gem-cost-tag {
+    position: absolute; right: 14px;
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 10px; padding: 3px 8px;
+    font-size: 13px; font-weight: 800;
+    display: flex; align-items: center; gap: 3px;
   }
 
   /* ===== TOAST ===== */
@@ -282,13 +285,12 @@
   .countdown-txt  { font-size: 28px; font-weight: 900; color: var(--btn-yellow); letter-spacing: 2px; margin-bottom: 20px; }
   .ok-btn {
     background: linear-gradient(180deg, var(--btn-yellow), #F59F00);
-    border: 3px solid #734300; border-radius: 12px;
-    box-shadow: 0 4px 0 var(--btn-shadow);
-    padding: 12px 36px; font-size: 16px; font-weight: 900; color: white;
-    -webkit-text-stroke: 0.5px #734300; cursor: pointer;
+    border: 3px solid #734300; border-radius: 12px; box-shadow: 0 4px 0 var(--btn-shadow);
+    padding: 12px 36px; font-size: 16px; font-weight: 900; color: white; cursor: pointer;
+    -webkit-text-stroke: 0.5px #734300;
   }
 
-  /* ===== CONFIRM MODAL (generic) ===== */
+  /* ===== CONFIRM MODAL ===== */
   .confirm-modal {
     position: fixed; inset: 0; background: rgba(10,22,38,0.88);
     display: none; align-items: center; justify-content: center; z-index: 250;
@@ -302,32 +304,29 @@
   }
   .confirm-box h3 { font-size: 20px; font-weight: 900; color: var(--text-dark); margin-bottom: 6px; }
   .confirm-box p  { font-size: 13px; color: var(--text-dark); margin-bottom: 16px; line-height: 1.5; }
-  .confirm-dice-preview { display: flex; justify-content: center; gap: 6px; margin-bottom: 16px; }
+  .cost-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(155,89,182,0.2); border: 1px solid #d7bde2;
+    border-radius: 10px; padding: 4px 10px; font-size: 13px; font-weight: 800;
+    color: #4a235a; margin-bottom: 14px;
+  }
+  .dice-preview { display: flex; justify-content: center; gap: 6px; margin-bottom: 16px; }
   .mini-dice {
     width: 32px; height: 32px; background: white; border-radius: 7px;
-    box-shadow: 0 3px 0 #aaa;
-    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 0 #aaa; display: flex; align-items: center; justify-content: center;
     font-size: 16px; font-weight: 900; color: #333;
   }
   .mini-dice.locked-d { background: #FFF9C4; box-shadow: 0 3px 0 #D4A800; }
   .confirm-actions { display: flex; gap: 8px; justify-content: center; }
   .btn-confirm {
     background: linear-gradient(180deg, #22c55e, #16a34a);
-    border: 2px solid #14532d; border-radius: 10px;
-    box-shadow: 0 4px 0 #14532d; padding: 10px 22px;
-    font-size: 14px; font-weight: 800; color: white; cursor: pointer;
+    border: 2px solid #14532d; border-radius: 10px; box-shadow: 0 4px 0 #14532d;
+    padding: 10px 22px; font-size: 14px; font-weight: 800; color: white; cursor: pointer;
   }
   .btn-confirm:active { box-shadow: 0 1px 0 #14532d; transform: translateY(3px); }
   .btn-cancel {
-    background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 10px; padding: 10px 20px;
-    font-size: 14px; font-weight: 700; color: white; cursor: pointer;
-  }
-  .cost-pill {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: rgba(155,89,182,0.25); border: 1px solid #d7bde2;
-    border-radius: 10px; padding: 4px 10px; font-size: 13px;
-    font-weight: 800; color: #e9d5ff; margin-bottom: 14px;
+    background: rgba(0,0,0,0.15); border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 10px; padding: 10px 20px; font-size: 14px; font-weight: 700; color: white; cursor: pointer;
   }
 </style>
 </head>
@@ -335,7 +334,7 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Already played overlay -->
+<!-- Blocked overlay -->
 <div class="blocked-overlay" id="blockedOverlay">
   <div class="blocked-box">
     <div class="blocked-icon">🎲</div>
@@ -346,15 +345,13 @@
   </div>
 </div>
 
-<!-- Generic confirm modal -->
+<!-- Confirm modal -->
 <div class="confirm-modal" id="confirmModal">
   <div class="confirm-box">
     <h3 id="confirmTitle"></h3>
     <p id="confirmDesc"></p>
-    <div class="cost-pill" id="confirmCost" style="display:none">
-      <span>💎</span><span id="confirmCostAmt"></span>
-    </div>
-    <div class="confirm-dice-preview" id="confirmDicePreview"></div>
+    <div class="cost-pill" id="confirmCost" style="display:none">💎 <span id="confirmCostAmt"></span></div>
+    <div class="dice-preview" id="confirmDicePreview" style="display:none"></div>
     <div class="confirm-actions">
       <button class="btn-cancel" onclick="closeConfirm()">Cancelar</button>
       <button class="btn-confirm" id="confirmOkBtn">Confirmar</button>
@@ -362,12 +359,9 @@
   </div>
 </div>
 
-<!-- GEM bar -->
-<div class="gem-bar" id="gemBar">
-  <div class="gem-badge">
-    <span class="gem-icon">💎</span>
-    <span id="gemCount">20</span>
-  </div>
+<!-- Gem bar -->
+<div class="gem-bar">
+  <div class="gem-badge">💎 <span id="gemCount">20</span></div>
 </div>
 
 <div class="modal-wrapper">
@@ -376,7 +370,6 @@
     <div class="close-btn" onclick="showToast('Cerrando...','warn')">
       <iconify-icon icon="lucide:x" style="font-size:20px;"></iconify-icon>
     </div>
-
     <div class="ribbon-container">
       <div class="ribbon-tail left"></div>
       <div class="ribbon-tail right"></div>
@@ -386,7 +379,7 @@
     <!-- Rewards -->
     <div class="rewards-section">
       <h2 class="subtitle">¡Lanza los dados para ganar recompensas!</h2>
-      <div class="rewards-grid" id="rewardsGrid">
+      <div class="rewards-grid">
         <div class="reward-cell green locked" id="cat-0" onclick="tryAssign(0)">
           <div class="req-box light">3x</div>
           <div class="prize-box"><iconify-icon icon="lucide:layers" style="font-size:24px;color:#DB2777;"></iconify-icon><span class="prize-qty">x2</span></div>
@@ -428,7 +421,7 @@
     <!-- Dice Section -->
     <div class="dice-section">
 
-      <!-- Rolls row -->
+      <!-- Rolls + reroll pips row -->
       <div class="rolls-row">
         <div class="rolls-left-info">
           <span class="rolls-label">Tiradas:</span>
@@ -438,30 +431,13 @@
             <div class="roll-pip active" id="pip-2"></div>
           </div>
         </div>
-        <!-- Reroll pips indicator -->
         <div class="rolls-left-info">
-          <span class="rolls-label" style="font-size:11px;">Rerolls:</span>
+          <span class="rolls-label" style="font-size:11px;">Bonus:</span>
           <div class="reroll-pips">
             <div class="reroll-pip avail" id="rpip-0"></div>
             <div class="reroll-pip avail" id="rpip-1"></div>
           </div>
         </div>
-      </div>
-
-      <!-- Bonus action buttons -->
-      <div class="bonus-row">
-        <!-- Reroll: 1 gem, max 2 -->
-        <button class="bonus-btn btn-reroll" id="btnReroll" onclick="askReroll()">
-          <iconify-icon icon="lucide:dices" style="font-size:14px;"></iconify-icon>
-          Bonus Roll
-          <div class="gem-cost">💎 1</div>
-        </button>
-        <!-- Restart turn: 5 gems -->
-        <button class="bonus-btn btn-restart" id="btnRestart" onclick="askRestart()">
-          <iconify-icon icon="lucide:refresh-cw" style="font-size:14px;"></iconify-icon>
-          Restart Turn
-          <div class="gem-cost">💎 5</div>
-        </button>
       </div>
 
       <!-- Dice tray -->
@@ -473,8 +449,8 @@
         <div class="dice" id="die-4" onclick="toggleLock(4)"></div>
       </div>
 
-      <!-- Roll button -->
-      <div class="roll-btn disabled" id="rollBtn" onclick="rollDice()">
+      <!-- ROLL button (shown when rolls remain) -->
+      <div class="roll-btn" id="rollBtn" onclick="rollDice()">
         <span class="roll-btn-text">ROLL</span>
         <div class="roll-pips">
           <div class="roll-pip active"  id="bpip-0"></div>
@@ -483,27 +459,38 @@
         </div>
       </div>
 
+      <!-- Gem actions (replace ROLL when out of rolls) -->
+      <div class="gem-actions" id="gemActions">
+        <div class="gem-btn btn-reroll" id="btnReroll" onclick="askReroll()">
+          <iconify-icon icon="lucide:dices" style="font-size:20px;"></iconify-icon>
+          Bonus Roll
+          <div class="gem-cost-tag">💎 1</div>
+        </div>
+        <div class="gem-btn btn-restart" id="btnRestart" onclick="askRestart()">
+          <iconify-icon icon="lucide:refresh-cw" style="font-size:20px;"></iconify-icon>
+          Restart Turn
+          <div class="gem-cost-tag">💎 5</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
-// ===== CONFIG =====
-const TOTAL_ROLLS   = 3;
-const MAX_REROLLS   = 2;
-const REROLL_COST   = 1;
-const RESTART_COST  = 5;
-const STORAGE_KEY   = 'dailyRoll_v2';
-const GEM_KEY       = 'dailyRoll_gems';
+const TOTAL_ROLLS  = 3;
+const MAX_REROLLS  = 2;
+const REROLL_COST  = 1;
+const RESTART_COST = 5;
+const STORAGE_KEY  = 'dailyRoll_v3';
+const GEM_KEY      = 'dailyRoll_gems';
 
-// ===== STATE =====
 let diceValues  = [1,1,1,1,1];
 let lockedDice  = [false,false,false,false,false];
 let rollsLeft   = TOTAL_ROLLS;
 let rerollsLeft = MAX_REROLLS;
 let hasRolled   = false;
 let sessionDone = false;
-let pendingAction = null; // { type, catId? }
 let gems = parseInt(localStorage.getItem(GEM_KEY) || '20');
 
 const categories = [
@@ -516,45 +503,62 @@ const categories = [
   { id:6, name:'YAHTZEE!',       prize:'5x Dados',     check: yahtzee,       claimed:false },
 ];
 
-// ===== INIT =====
 function init() {
   renderGems();
-  // Enable roll button
-  document.getElementById('rollBtn').classList.remove('disabled');
   const saved = getSaved();
   if (saved && saved.date === todayStr()) {
-    showBlocked();
     saved.claimed.forEach((c,i) => { if(c) categories[i].claimed = true; });
+    showBlocked();
     renderCategories();
     return;
   }
   renderDice();
   renderPips();
   renderRerollPips();
-  updateBonusBtns();
+  updateButtonArea();
 }
 
-// ===== STORAGE =====
 function todayStr() { return new Date().toISOString().slice(0,10); }
 function getSaved()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; } }
 function saveGems()  { localStorage.setItem(GEM_KEY, String(gems)); }
 function saveToday() { localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayStr(), claimed: categories.map(c=>c.claimed) })); }
 
-// ===== GEMS =====
 function renderGems() { document.getElementById('gemCount').textContent = gems; }
 function spendGems(n) {
   if (gems < n) return false;
-  gems -= n;
-  saveGems(); renderGems();
-  return true;
+  gems -= n; saveGems(); renderGems(); return true;
 }
 
-// ===== BLOCKED =====
+// Switch between ROLL button and gem actions
+function updateButtonArea() {
+  const outOfRolls = rollsLeft === 0;
+  const rollBtn    = document.getElementById('rollBtn');
+  const gemActions = document.getElementById('gemActions');
+
+  if (sessionDone) {
+    rollBtn.style.display = 'none';
+    gemActions.classList.remove('show');
+    return;
+  }
+
+  if (outOfRolls) {
+    rollBtn.style.display = 'none';
+    gemActions.classList.add('show');
+    // Enable/disable individual gem buttons
+    document.getElementById('btnReroll').classList.toggle('disabled',
+      rerollsLeft === 0 || !hasRolled || gems < REROLL_COST
+    );
+    document.getElementById('btnRestart').classList.toggle('disabled', gems < RESTART_COST);
+  } else {
+    rollBtn.style.display = 'flex';
+    gemActions.classList.remove('show');
+  }
+}
+
 function showBlocked() {
   sessionDone = true;
-  document.getElementById('rollBtn').classList.add('disabled');
+  updateButtonArea();
   document.getElementById('blockedOverlay').classList.add('show');
-  updateBonusBtns();
   startCountdown();
 }
 function startCountdown() {
@@ -570,7 +574,6 @@ function startCountdown() {
   tick(); setInterval(tick, 1000);
 }
 
-// ===== DICE =====
 function renderDice() {
   for (let i=0; i<5; i++) {
     const el = document.getElementById(`die-${i}`);
@@ -592,35 +595,20 @@ function renderPips() {
     document.getElementById(`pip-${i}`).className  = 'roll-pip ' + (a?'active':'inactive');
     document.getElementById(`bpip-${i}`).className = 'roll-pip ' + (a?'active':'inactive');
   }
-  const btn = document.getElementById('rollBtn');
-  if (rollsLeft === 0 || sessionDone) btn.classList.add('disabled');
-  else btn.classList.remove('disabled');
 }
 function renderRerollPips() {
   for (let i=0; i<MAX_REROLLS; i++) {
     document.getElementById(`rpip-${i}`).className = 'reroll-pip ' + (i < rerollsLeft ? 'avail' : 'used');
   }
 }
-function updateBonusBtns() {
-  const rr = document.getElementById('btnReroll');
-  const rs = document.getElementById('btnRestart');
-  // Reroll: disabled if session done, no rerolls left, not rolled yet, or not enough gems
-  const rerollOk = !sessionDone && rerollsLeft > 0 && hasRolled && gems >= REROLL_COST;
-  rr.classList.toggle('disabled', !rerollOk);
-  // Restart: disabled if session done or not enough gems
-  const restartOk = !sessionDone && gems >= RESTART_COST;
-  rs.classList.toggle('disabled', !restartOk);
-}
 
-// ===== ROLL =====
 function rollDice() {
-  if (rollsLeft === 0 || sessionDone) { showToast('Sin tiradas disponibles','warn'); return; }
-  hasRolled = true;
-  rollsLeft--;
-  animateAndRoll(false);
+  if (rollsLeft === 0 || sessionDone) return;
+  hasRolled = true; rollsLeft--;
+  animateAndRoll();
 }
 
-function animateAndRoll(reroll) {
+function animateAndRoll() {
   for (let i=0; i<5; i++) {
     if (!lockedDice[i]) {
       const el = document.getElementById(`die-${i}`);
@@ -629,131 +617,107 @@ function animateAndRoll(reroll) {
       diceValues[i] = Math.ceil(Math.random()*6);
     }
   }
-  setTimeout(()=>{
-    renderDice(); renderPips(); renderRerollPips(); renderCategories(); updateBonusBtns();
-    if (rollsLeft===0 && !reroll) showToast('Sin tiradas — usa Bonus Roll o asigna resultado','warn');
+  setTimeout(() => {
+    renderDice(); renderPips(); renderRerollPips(); renderCategories(); updateButtonArea();
   }, 420);
 }
 
-// ===== LOCK =====
 function toggleLock(i) {
   if (!hasRolled) { showToast('Tira primero','warn'); return; }
-  if (rollsLeft===0 && rerollsLeft===0) { showToast('Sin tiradas disponibles','warn'); return; }
   lockedDice[i] = !lockedDice[i];
   renderDice();
-  showToast(lockedDice[i] ? `🔒 Dado ${diceValues[i]} bloqueado` : `🔓 Dado desbloqueado`,'success');
+  showToast(lockedDice[i] ? `🔒 Dado ${diceValues[i]} bloqueado` : `🔓 Dado desbloqueado`, 'success');
 }
 
-// ===== BONUS: REROLL =====
 function askReroll() {
   if (document.getElementById('btnReroll').classList.contains('disabled')) return;
-  pendingAction = { type: 'reroll' };
   openConfirm(
     'Bonus Roll',
-    `Tira de nuevo los dados no bloqueados.\nTe quedan ${rerollsLeft} de ${MAX_REROLLS} bonus rolls.`,
-    REROLL_COST,
-    null,
+    `Tira de nuevo los dados no bloqueados. Te quedan ${rerollsLeft} de ${MAX_REROLLS} bonus rolls.`,
+    REROLL_COST, null,
     () => {
-      if (!spendGems(REROLL_COST)) { showToast('Sin gemas suficientes','error'); return; }
+      if (!spendGems(REROLL_COST)) { showToast('Sin gemas','error'); return; }
       rerollsLeft--;
-      animateAndRoll(true);
-      showToast(`💎 Bonus Roll usado (${rerollsLeft} restantes)`,'gem');
+      rollsLeft = 1; // give 1 extra roll
       closeConfirm();
+      setTimeout(() => { rollDice(); }, 100);
+      showToast(`💎 Bonus Roll usado — ${rerollsLeft} restantes`, 'gem');
     }
   );
 }
 
-// ===== BONUS: RESTART =====
 function askRestart() {
   if (document.getElementById('btnRestart').classList.contains('disabled')) return;
-  pendingAction = { type: 'restart' };
   openConfirm(
     'Restart Turn',
-    'Reinicia el turno: 3 tiradas nuevas, dados desbloqueados.\nLas recompensas ya reclamadas se mantienen.',
-    RESTART_COST,
-    null,
+    'Reinicia el turno: 3 tiradas nuevas, dados desbloqueados. Las recompensas ya reclamadas se mantienen.',
+    RESTART_COST, null,
     () => {
-      if (!spendGems(RESTART_COST)) { showToast('Sin gemas suficientes','error'); return; }
+      if (!spendGems(RESTART_COST)) { showToast('Sin gemas','error'); return; }
       diceValues  = [1,1,1,1,1];
       lockedDice  = [false,false,false,false,false];
       rollsLeft   = TOTAL_ROLLS;
       rerollsLeft = MAX_REROLLS;
       hasRolled   = false;
-      renderDice(); renderPips(); renderRerollPips(); renderCategories(); updateBonusBtns();
-      showToast(`💎 Turno reiniciado (+${RESTART_COST} gems gastados)`,'gem');
       closeConfirm();
+      renderDice(); renderPips(); renderRerollPips(); renderCategories(); updateButtonArea();
+      showToast(`💎 Turno reiniciado`, 'gem');
     }
   );
 }
 
-// ===== ASSIGN REWARD =====
 function tryAssign(catId) {
   if (sessionDone) return;
   const cat = categories[catId];
   if (cat.claimed) { showToast('Ya reclamado','warn'); return; }
   if (!hasRolled)  { showToast('Tira los dados primero','warn'); return; }
-  if (!cat.check()) { showToast('Combinación no válida para esta categoría','error'); return; }
+  if (!cat.check()) { showToast('Combinación no válida','error'); return; }
   openConfirm(
-    cat.name,
-    `Premio: ${cat.prize}`,
-    null,
-    diceValues.map((v,i)=>({ v, locked: lockedDice[i] })),
+    cat.name, `Premio: ${cat.prize}`, null,
+    diceValues.map((v,i) => ({ v, locked: lockedDice[i] })),
     () => {
-      cat.claimed = true;
-      closeConfirm();
-      renderCategories();
-      saveToday();
-      showToast(`🎉 ¡${cat.prize} reclamado!`,'success');
-      const allDone = rollsLeft===0 && rerollsLeft===0;
-      if (allDone && !sessionDone) {
-        sessionDone = true;
-        updateBonusBtns();
-        saveToday();
-        setTimeout(showBlocked, 1200);
-      }
+      cat.claimed = true; closeConfirm();
+      renderCategories(); saveToday();
+      showToast(`🎉 ¡${cat.prize} reclamado!`, 'success');
     }
   );
 }
 
-// ===== CATEGORY CHECKS =====
-function counts() {
-  const c={};
-  diceValues.forEach(v=>c[v]=(c[v]||0)+1);
-  return Object.values(c).sort((a,b)=>b-a);
-}
-function threeOfAKind()  { return counts()[0]>=3; }
-function fourOfAKind()   { return counts()[0]>=4; }
-function fullHouse()     { const c=counts(); return c[0]===3&&c[1]===2; }
+function threeOfAKind()  { return counts()[0] >= 3; }
+function fourOfAKind()   { return counts()[0] >= 4; }
+function fullHouse()     { const c=counts(); return c[0]===3 && c[1]===2; }
 function smallStraight() {
   const u=[...new Set(diceValues)].sort((a,b)=>a-b);
-  for(let i=0;i<=u.length-4;i++){
-    if(u[i+3]-u[i]===3&&u[i+1]-u[i]===1&&u[i+2]-u[i+1]===1&&u[i+3]-u[i+2]===1) return true;
-  }
+  for (let i=0; i<=u.length-4; i++)
+    if (u[i+3]-u[i]===3 && u[i+1]-u[i]===1 && u[i+2]-u[i+1]===1 && u[i+3]-u[i+2]===1) return true;
   return false;
 }
-function largeStraight() { const u=[...new Set(diceValues)].sort((a,b)=>a-b); return u.length===5&&u[4]-u[0]===4; }
-function yahtzee()       { return counts()[0]===5; }
+function largeStraight() { const u=[...new Set(diceValues)].sort((a,b)=>a-b); return u.length===5 && u[4]-u[0]===4; }
+function yahtzee()       { return counts()[0] === 5; }
+function counts() {
+  const c={};
+  diceValues.forEach(v => c[v]=(c[v]||0)+1);
+  return Object.values(c).sort((a,b)=>b-a);
+}
 
 function renderCategories() {
-  categories.forEach(cat=>{
-    const el=document.getElementById(`cat-${cat.id}`);
-    el.className=el.className.replace(/ (locked|available|claimed)/g,'');
-    if(cat.claimed) el.classList.add('claimed');
-    else if(hasRolled&&cat.check()) el.classList.add('available');
-    else el.classList.add('locked');
+  categories.forEach(cat => {
+    const el = document.getElementById(`cat-${cat.id}`);
+    el.className = el.className.replace(/ (locked|available|claimed)/g,'');
+    if (cat.claimed)             el.classList.add('claimed');
+    else if (hasRolled && cat.check()) el.classList.add('available');
+    else                         el.classList.add('locked');
   });
 }
 
-// ===== GENERIC CONFIRM MODAL =====
-let _confirmCallback = null;
-function openConfirm(title, desc, gemCost, dicePreview, onConfirm) {
-  _confirmCallback = onConfirm;
+// Generic confirm modal
+function openConfirm(title, desc, gemCost, dicePreview, onOk) {
   document.getElementById('confirmTitle').textContent = title;
   document.getElementById('confirmDesc').textContent  = desc;
   const costEl = document.getElementById('confirmCost');
   if (gemCost !== null) {
     costEl.style.display = 'inline-flex';
-    document.getElementById('confirmCostAmt').textContent = `${gemCost} gemas`;
+    document.getElementById('confirmCostAmt').textContent = `${gemCost} gema${gemCost>1?'s':''}`;
   } else {
     costEl.style.display = 'none';
   }
@@ -763,17 +727,12 @@ function openConfirm(title, desc, gemCost, dicePreview, onConfirm) {
     preview.style.display = 'flex';
   } else {
     preview.style.display = 'none';
-    preview.innerHTML = '';
   }
-  document.getElementById('confirmOkBtn').onclick = onConfirm;
+  document.getElementById('confirmOkBtn').onclick = onOk;
   document.getElementById('confirmModal').classList.add('show');
 }
-function closeConfirm() {
-  document.getElementById('confirmModal').classList.remove('show');
-  _confirmCallback = null; pendingAction = null;
-}
+function closeConfirm() { document.getElementById('confirmModal').classList.remove('show'); }
 
-// ===== TOAST =====
 const toastEl = document.getElementById('toast');
 function showToast(msg, type='success') {
   toastEl.textContent = msg;
@@ -782,8 +741,8 @@ function showToast(msg, type='success') {
   toastEl._t = setTimeout(()=>toastEl.classList.remove('show'), 2400);
 }
 
-document.getElementById('confirmModal').addEventListener('click', e=>{
-  if(e.target===document.getElementById('confirmModal')) closeConfirm();
+document.getElementById('confirmModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('confirmModal')) closeConfirm();
 });
 
 init();
