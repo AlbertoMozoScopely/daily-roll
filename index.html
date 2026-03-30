@@ -745,7 +745,9 @@ function tryAssign(catId) {
     diceValues.map((v,i) => ({ v, locked: lockedDice[i] })),
     () => {
       cat.claimed = true; closeConfirm();
+      sessionDone = true;
       renderCategories(); saveToday(); savePermanent();
+      updateButtonArea();
       document.getElementById('nextDayBtn').disabled = false;
       showToast(`🎉 ${cat.prize} claimed!`, 'success');
     }
